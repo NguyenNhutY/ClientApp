@@ -1,9 +1,11 @@
-﻿import '../styles/App.css'
-import { useEffect } from 'react';
+﻿import React, { useEffect } from 'react';
 import { Possibility, Features, Info, Header } from '../containers';
 import { CTA, BackToTopButton } from '../components';
 import { motion, useAnimation } from "framer-motion";
 import { useInView } from "react-intersection-observer";
+
+// Thêm CSS cho chế độ tối
+import '../styles/App.css';
 
 const boxVariant = {
     visible: { opacity: 1, scale: 1, transition: { duration: 0.5 } },
@@ -12,8 +14,7 @@ const boxVariant = {
 
 const Box = ({ children }) => {
     const control = useAnimation();
-    const [ref, inView] = useInView();
-
+    const [ref, inView] = useInView()
     useEffect(() => {
         if (inView) {
             control.start("visible");
@@ -21,7 +22,6 @@ const Box = ({ children }) => {
             control.start("hidden");
         }
     }, [control, inView]);
-
     return (
         <motion.div
             className="box"
@@ -35,26 +35,29 @@ const Box = ({ children }) => {
     );
 };
 
-export function Home() {
+export function Home({ darkMode }) {
     return (
-                <div className="App">
-                    <div className="gradient__bg">
-                        <Header />
-                    </div>
-                    <BackToTopButton />
-                    <Box>
-                        <Info />
-                    </Box>
-                    <Box>
-                        <Features />
-                    </Box>
-                    <Box>
-                        <Possibility />
-                    </Box>
+        <div className={` ${darkMode ? 'darkMode' : ''}`}>
+   
+            <div className="gradient__bg">
+                <Header />
+            </div>   
+            <div >
+                <BackToTopButton />
+                <Box >
+                    <Info />
+                </Box>
+                <Box>
+                    <Features />
+                </Box>
+                <Box>
+                    <Possibility />
+                </Box>
 
-                    <Box>
-                        <CTA />
+                <Box>
+                    <CTA />
                     </Box>
                 </div>
+        </div>
     );
 }

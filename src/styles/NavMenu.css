@@ -1,22 +1,24 @@
 ﻿
 a.navbar-brand {
-  white-space: normal;
-  text-align: center;
-  word-break: break-all;
+    white-space: normal;
+    text-align: center;
+    word-break: break-all;
 }
 
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
+
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 .box-shadow {
-  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+    box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
 }
+
 .navbar {
     display: flex;
     justify-content: space-between;
@@ -132,14 +134,21 @@ html {
         left: 120px;
     }
 }
+
 @media (min-width: 1000px) and (max-width: 1200px) {
     .darkmode-label {
-        left: 350px;
+        left: 200px;
     }
     /* Các quy tắc CSS dành cho thiết bị có màn hình từ 992px đến 1199.98px */
 }
 
-    /* Các quy tắc CSS dành cho thiết bị có màn hình lớn hơn hoặc bằng 1200px */
+@media (min-width: 1200px) {
+    .darkmode-label {
+        left: 1000px;
+    }
+    /* Các quy tắc CSS dành cho thiết bị có màn hình từ 992px đến 1199.98px */
+}
+/* Các quy tắc CSS dành cho thiết bị có màn hình lớn hơn hoặc bằng 1200px */
 @media (min-width: 575px) and (max-width: 765px) {
     .navbar {
         padding: 2rem 4rem;
@@ -195,9 +204,12 @@ html {
     color: #FF4820;
     text-decoration: none;
 }
-.text-nav:hover{
-    text-decoration:underline;
 
+.text-nav:hover {
+    text-decoration: underline;
+}
+
+.text-nav {
 }
 /* This is a Dark mode toggle comment */
 .darkmode-label {
@@ -226,55 +238,55 @@ html {
         transition: 0.3s;
     }
 
-    #darkmode-toggle {
-        width: 0;
-        height: 0;
-        visibility: hidden;
-    }
+#darkmode-toggle {
+    width: 0;
+    height: 0;
+    visibility: hidden;
+}
 
-        #darkmode-toggle:checked + .darkmode-label {
-            background: #242424;
-        }
-
-            #darkmode-toggle:checked + .darkmode-label:after {
-                transform: translateX(100%);
-                background: linear-gradient(180deg,#777,#3a3a3a);
-            }
-
-    .darkmode-label:active:after {
-        width: 30px;
-    }
-
-
-
-    #darkmode-toggle:checked + .darkmode-label + .background {
+    #darkmode-toggle:checked + .darkmode-label {
         background: #242424;
     }
 
-    .darkmode-label svg {
-        position: absolute;
-        width: 20px;
-        z-index: 100;
-    }
-
-        .darkmode-label svg.sun {
-            top: 5px;
-            left: 5px;
-            fill: #fff;
-            transition: 0.3s;
+        #darkmode-toggle:checked + .darkmode-label:after {
+            transform: translateX(100%);
+            background: linear-gradient(180deg,#777,#3a3a3a);
         }
 
-        .darkmode-label svg.moon {
-            top: 5px;
-            left: 35px;
-            fill: #7e7e7e;
-            transition: 0.3s;
-        }
+.darkmode-label:active:after {
+    width: 30px;
+}
 
-    #darkmode-toggle:checked + .darkmode-label svg.sun {
-        fill: #7e7e7e;
-    }
 
-    #darkmode-toggle:checked + .darkmode-label svg.moon {
+
+#darkmode-toggle:checked + .darkmode-label + .background {
+    background: #242424;
+}
+
+.darkmode-label svg {
+    position: absolute;
+    width: 20px;
+    z-index: 100;
+}
+
+    .darkmode-label svg.sun {
+        top: 5px;
+        left: 5px;
         fill: #fff;
+        transition: 0.3s;
     }
+
+    .darkmode-label svg.moon {
+        top: 5px;
+        left: 35px;
+        fill: #7e7e7e;
+        transition: 0.3s;
+    }
+
+#darkmode-toggle:checked + .darkmode-label svg.sun {
+    fill: #7e7e7e;
+}
+
+#darkmode-toggle:checked + .darkmode-label svg.moon {
+    fill: #fff;
+}

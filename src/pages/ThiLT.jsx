@@ -2,7 +2,7 @@
 import axios from 'axios';
 import $ from 'jquery';
 import { TbPlayerTrackNextFilled, TbPlayerTrackPrevFilled } from "react-icons/tb";
-
+import { Cursor  } from "../components"
 
 const SwitchComponent = memo(({ handleCheckboxChange, autoSwitchEnabled }) => {
     return (
@@ -14,13 +14,15 @@ const SwitchComponent = memo(({ handleCheckboxChange, autoSwitchEnabled }) => {
 });
 
 export const ThiLT = () => {
+
     //Hạng thị GPLX
     const [classGPLX, setClassGPLX] = useState(() => {
         var hangJson = localStorage.getItem('HANG');
 
         var hang = JSON.parse(hangJson);
-
-        return hang.idHang;
+        if (hang == null)
+            window.location.href = '/';
+        return hang != null ? hang.idHang : '';
     });
 
     //Câu hỏi dành cho hạng thị(int)
@@ -47,7 +49,8 @@ export const ThiLT = () => {
 
         var hang = JSON.parse(hangJson);
 
-        return hang.thoigianthi*60;
+        return hang != null ? hang.thoigianthi * 60 : 1;
+
     }); // Thời gian còn lại trong bài thi (tính theo giây)
     const [timerActive, setTimerActive] = useState(false); // Trạng thái của đồng hồ đếm ngược
 
@@ -85,6 +88,10 @@ export const ThiLT = () => {
 
     //Tải câu hỏi và init giá trị cho page
     useEffect(() => {
+        if (classGPLX === '') {
+            alert("Vui lòng chọn hạng");
+            window.location.href = '/';
+        }
         const fetchData = async () => {
             try {
                 const response = await axios.post(`https://localhost:7086/lythuyet/laydethimoi?id=` + classGPLX);
@@ -202,25 +209,25 @@ export const ThiLT = () => {
 
     useEffect(() => {
         if (endTest == true) {
-                var index = lsQuestion[currentQuestionIndex].Dapans.$values.find(e => e.Dapandung == true).IdDapan - 1;
-                if (lsChoose[currentQuestionIndex] != index) {
-                    $(".choose-val").removeClass("bg-[blue] bg-[red] text-white");
-                    $(".choose-val").eq(index).addClass("bg-[blue] text-white");
-                    if (lsChoose[currentQuestionIndex]!=-1)
-                         $(".choose-val").eq(lsChoose[currentQuestionIndex]).addClass("bg-[red] text-white");
+            var index = lsQuestion[currentQuestionIndex].Dapans.$values.find(e => e.Dapandung == true).IdDapan - 1;
+            if (lsChoose[currentQuestionIndex] != index) {
+                $(".choose-val").removeClass("bg-[blue] bg-[red] text-white");
+                $(".choose-val").eq(index).addClass("bg-[blue] text-white");
+                if (lsChoose[currentQuestionIndex] != -1)
+                    $(".choose-val").eq(lsChoose[currentQuestionIndex]).addClass("bg-[red] text-white");
 
-                }
-                else {
-                    $(".choose-val").removeClass("bg-[blue] bg-[red] text-white");
-                    $(".choose-val").eq(index).addClass("bg-[blue] text-white");
-                }
-            
+            }
+            else {
+                $(".choose-val").removeClass("bg-[blue] bg-[red] text-white");
+                $(".choose-val").eq(index).addClass("bg-[blue] text-white");
+            }
+
         }
         else {
             $(".choose-val").removeClass("bg-[blue] bg-[red] text-white");
-            if (lsChoose[currentQuestionIndex]!= -1)
+            if (lsChoose[currentQuestionIndex] != -1)
                 $(".choose-val").eq(lsChoose[currentQuestionIndex]).addClass("bg-[blue] text-white");
-            
+
         }
         console.log(lsChoose);
     }, [lsChoose, currentQuestionIndex, endTest]);
@@ -279,14 +286,14 @@ export const ThiLT = () => {
                 count++;
             }
             else
-            if (lsQuestion[index].Ttcaus.$values[0].Diemliet==true) {
-                if (value + 1 != ind) {
-                    count = -100;
+                if (lsQuestion[index].Ttcaus.$values[0].Diemliet == true) {
+                    if (value + 1 != ind) {
+                        count = -100;
+                    }
+                    else {
+                        count++;
+                    }
                 }
-                else {
-                    count++;
-                }
-            }
         });
         if (count < 0) {
             alert("BẠN ĐÃ THI RỚT");
@@ -300,6 +307,7 @@ export const ThiLT = () => {
 
     return (
         <>
+
             <div id="questionOverlay" className="overlay hidden">
                 <button className="w-25 flex justify-center items-center" id="closeOverlayBtn" onClick={closeListQuestion}>
                     <img width="64" height="64" src="https://img.icons8.com/nolan/64/exit.png" alt="exit" />
@@ -309,10 +317,10 @@ export const ThiLT = () => {
                 <div className="container">
                     <div className="container flex flex-col justify-center items-center">
 
-                        <div id="selectedQuestions" className="selected-questions w-75 h-100">
+                        <div id="selectedQuestions" className="selected-questions w-100 h-100">
                             {lsQuestion && lsChoose.map((value, index) => (
                                 <button
-                                    style={{ width: '60px', height: '60px' }}
+                                    style={{ width: '50px', height: '50px' }}
                                     className={`btn btn-${value !== -1 ? 'success' : 'secondary'} m-1 text-left text-center`}
                                     onClick={() => selectQuestion(index)}
                                     key={`select_ques_${index}`}
@@ -331,7 +339,7 @@ export const ThiLT = () => {
                                 <img className="w-10 h-10" src="https://img.icons8.com/ultraviolet/40/minus.png" alt="minus" />
                             </button>
                         </div>
-    
+
                         <div className="row mt-4">
                             <button
                                 className="btn btn-secondary m-1 flex justify-center"
@@ -344,26 +352,26 @@ export const ThiLT = () => {
                             >
                                 <TbPlayerTrackPrevFilled />
                             </button>
-    
+
                             <button
                                 className="btn btn-secondary m-1 flex justify-center"
                                 id="nextBtn"
                                 onClick={() => {
                                     if (currentQuestionIndex < lsQuestion.length - 1) {
-                                        selectQuestion(currentQuestionIndex+1)
+                                        selectQuestion(currentQuestionIndex + 1)
                                     }
                                 }}
                             >
                                 <TbPlayerTrackNextFilled />
                             </button>
                         </div>
-    
+
                         {!endTest && timerActive && (
                             <div className="row mt-4">
                                 <button className="btn btn-danger" onClick={handleSubmit}>Nộp bài</button>
                             </div>
                         )}
-    
+
                         {timerActive ? (
                             ques ? (
                                 <div className="container mt-4" id="test_content">
@@ -407,5 +415,5 @@ export const ThiLT = () => {
                 </div>
             </div>
         </>
-    );    
+    );
 };

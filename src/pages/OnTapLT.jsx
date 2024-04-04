@@ -2,7 +2,7 @@
 import axios from 'axios';
 import $ from 'jquery';
 import { TbPlayerTrackNextFilled, TbPlayerTrackPrevFilled } from "react-icons/tb";
-
+import {Cursor } from '../components'
 
 
 const SwitchComponent = memo(({ handleCheckboxChange, autoSwitchEnabled }) => {
@@ -20,8 +20,9 @@ export const OnTapLT = () => {
         var hangJson = localStorage.getItem('HANG');
 
         var hang = JSON.parse(hangJson);
-
-        return hang.idHang;
+        if (hang == null)
+            window.location.href = '/';
+        return hang != null ? hang.idHang : '';
     });
 
     //Câu hỏi dành cho hạng thị(int)
@@ -45,12 +46,14 @@ export const OnTapLT = () => {
 
     //Tải câu hỏi và init giá trị cho page
     useEffect(() => {
+
+
         const fetchData = async () => {
             try {
                 //Get question
 
                 const ques_response = await axios.post(`https://localhost:7086/lythuyet/laycauhoi?id=${classGPLX}`);
-                
+
                 const questions = ques_response.data.$values;
                 setLsQuestion(questions);
                 fetch('https://localhost:7086/cauhoi/getchapterformobile')
@@ -77,7 +80,6 @@ export const OnTapLT = () => {
                 console.error(error);
             }
         };
-
         fetchData();
     }, []);
 
@@ -171,7 +173,7 @@ export const OnTapLT = () => {
                 $(`#image${ques.IdCau}`).addClass("hidden");
             }
             else {
-                $(`#image${ques.IdCau}`).removeClass("hidden"); 
+                $(`#image${ques.IdCau}`).removeClass("hidden");
 
             }
         }
@@ -244,6 +246,7 @@ export const OnTapLT = () => {
 
     return (
         <>
+
             <div id="questionOverlay" className="overlay hidden">
                 <button className={"w-25 flex justify-center items-center"} id="closeOverlayBtn" onClick={closeListQuestion}>
                     <img width="64" height="64" src="https://img.icons8.com/nolan/64/exit.png" alt="exit" />
@@ -257,17 +260,17 @@ export const OnTapLT = () => {
                                     <div>{listChuong.find((valueChuong) => value.IdChuong === valueChuong.idChuong)?.thongTinChuong}</div>
                                 ) : null}
                                 <button
-                                style={{ width: '60px' }}
-                                className={`btn btn-${lsChoose[index] != -1 ? 'success' : 'secondary'} m-1 text-left`}
-                                onClick={() => selectQuestion(index)} // Use onClick instead of onclick
-                                key={`select_ques_${index}`} // Add a unique key for each button
+                                    style={{ width: '60px' }}
+                                    className={`btn btn-${lsChoose[index] != -1 ? 'success' : 'secondary'} m-1 text-left`}
+                                    onClick={() => selectQuestion(index)} // Use onClick instead of onclick
+                                    key={`select_ques_${index}`} // Add a unique key for each button
                                 >
 
-                                {index + 1}
+                                    {index + 1}
                                 </button>
                             </>
                         ))
-                        
+
                     }
                 </div>
             </div>

@@ -6,7 +6,8 @@
 }
 
 body {
-    background: white;
+        background-color: var(--background-light);
+    color: var(--text-light);
 }
 
 a {
@@ -92,4 +93,8 @@ a {
     .section__margin {
         margin: 4rem 2rem;
     }
+}
+.darkmode {
+    background-color: var(--background-dark);
+    color: var(--text-dark);
 }

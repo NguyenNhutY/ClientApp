@@ -1,16 +1,12 @@
-﻿import React, { Component } from 'react';
+﻿
+import React, { Component } from 'react';
 import { Collapse, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import '../styles/NavMenu.css';
 import logo from './../assets/logo.png';
-import { ReactComponent as Sun } from "./../assets/Sun.svg";
-import { ReactComponent as Moon } from "./../assets/Moon.svg";
-
-// Thêm import cho Modal chọn hạng GPLX
-import { OnTapLT } from '../pages/OnTapLT';
+import DarkModeToggle from "../components/DarkModeToggle";
 
 export class NavMenu extends Component {
-
     constructor(props) {
         super(props);
 
@@ -18,11 +14,13 @@ export class NavMenu extends Component {
             showModal: false,
             selectedLicenseType: {},
             licenseTypes: [],
-            darkMode: false, // Thêm state cho chế độ dark mode
+            darkMode: false,
+            collapsed: true // Thêm trạng thái cho việc ẩn hiện thanh điều hướng trên di động
         };
     }
 
     componentDidMount() {
+        // Fetch dữ liệu về loại giấy phép lái xe
         fetch('https://localhost:7086/cauhoi/gettypeformobile')
             .then(response => response.json())
             .then(data => {
@@ -31,6 +29,8 @@ export class NavMenu extends Component {
             .catch(error => {
                 console.error('Error fetching data:', error);
             });
+
+        // Kiểm tra và lấy dữ liệu loại giấy phép đã chọn từ LocalStorage
         const selectedLicenseType = JSON.parse(localStorage.getItem("HANG"));
         if (selectedLicenseType) {
             this.setState({ selectedLicenseType: selectedLicenseType });
@@ -61,11 +61,11 @@ export class NavMenu extends Component {
         const { selectedLicenseType } = this.state;
         if (selectedLicenseType) {
             // Lưu hạng GPLX vào localStorage
-            localStorage.setItem('HANG', JSON.stringify(selectedLicenseType));
+            if (selectedLicenseType.idHang)
+                localStorage.setItem('HANG', JSON.stringify(selectedLicenseType));
             // Đóng modal sau khi đã chọn hạng
             this.setState({ showModal: false });
             window.location.reload(false);
-
         } else {
             alert('Vui lòng chọn một hạng GPLX');
         }
@@ -78,15 +78,16 @@ export class NavMenu extends Component {
         if (licenseTypes.length === 0) {
             return <div>Loading...</div>; // Hiển thị một thông báo tải
         }
+
         return (
             <header>
-                <Navbar className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow mb-3" container light>
+                <Navbar className={`navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow mb-3 ${this.state.darkMode ? 'darkMode' : ''}`} container light>
                     <div className="navbar-links_logo">
                         <img src={logo} alt="logo" />
                     </div>
                     <NavbarBrand tag={Link} to="/">DemoGPLX</NavbarBrand>
                     <NavbarToggler onClick={this.toggleNavbar} className="mr-2" />
-                    <Collapse className={`d-sm-inline-flex flex-sm-row-reverse ${this.state.darkMode ? 'dark-mode' : ''}`} isOpen={!this.state.collapsed} navbar>
+                    <Collapse className="d-sm-inline-flex flex-sm-row-reverse" isOpen={!this.state.collapsed} navbar>
                         <ul className="navbar-nav flex-grow">
                             <NavItem>
                                 <NavLink tag={Link} className=" pt-3 text-nav  text-dark" to="/thi-ly-thuyet">Thi thử</NavLink>
@@ -94,18 +95,15 @@ export class NavMenu extends Component {
                             <NavItem>
                                 <NavLink tag={Link} className=" pt-3 text-nav  text-dark" to="/hoc-ly-thuyet">Học lý thuyết</NavLink>
                             </NavItem>
+                            <NavItem>
+                                <NavLink tag={Link} className=" pt-3 text-nav  text-dark" to="/about">Thanks</NavLink>
+                            </NavItem>
                             <NavItem className=" pt-2">
                                 <button className="btn btn-primary" onClick={() => this.openModal()}>{this.state.selectedLicenseType.thongtin != undefined ? "HẠNG: " + this.state.selectedLicenseType.thongtin : "VUI LÒNG CHỌN HẠNG"} </button>
                             </NavItem>
                             <NavItem>
-                                <input type="checkbox" id="darkmode-toggle" onChange={this.toggleDarkMode} />
-                                <label class="darkmode-label" htmlFor="darkmode-toggle">
-                                    <Sun />
-                                    <Moon />
-                                </label>
-
-                                {/* Background overlay */}
-                                <div className={`background ${this.state.darkMode ? 'dark-mode' : ''}`}></div>
+                                {/* Sử dụng DarkModeToggle component */}
+                                <DarkModeToggle darkMode={this.state.darkMode} toggleDarkMode={this.toggleDarkMode} />
                             </NavItem>
                         </ul>
                     </Collapse>
